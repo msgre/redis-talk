@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+
+        <title>Redis</title>
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+        <link rel="stylesheet" href="css/reveal.min.css">
+        <link rel="stylesheet" href="css/theme/default.css" id="theme">
+
+        <!-- For syntax highlighting -->
+        <link rel="stylesheet" href="plugin/highlight/styles/github.css">
+
+        <style>
+.strikeout {
+    position: relative;
+}
+.strikeout::after {
+    border-bottom: 10px solid #000;
+    content: "";
+    left: 35%;
+    position: absolute;
+    right: 36%;
+    top: 60%;
+}
+
+            pre code {
+                font-size: 120%;
+            }
+            .no-highlight {
+                color:#777;
+                font-weight:bold;
+            }
+            .circle {
+                display:inline-block;
+                width:150px;
+                height:150px;
+                -webkit-border-radius:100px;
+                border-radius:100px;
+                background:black;
+                color:white;
+            }
+            .reveal pre {
+                box-shadow:none;
+                width:100%;
+            }
+            .reveal pre code {
+                padding-left:1em;
+                padding-right:1em;
+            }
+            .reveal .model pre code {
+                background-color: #CBEFF3;
+            }
+            .reveal .model a {
+                color: #CBEFF3;
+            }
+            .reveal .view pre code {
+                background-color: #FFE6B2;
+            }
+            .reveal .view a {
+                color: #FFE6B2;
+            }
+            .reveal .events pre code {
+                background-color: #A7F0B7;
+            }
+            .reveal .events a {
+                color: #A7F0B7;
+            }
+            .reveal .controller pre code {
+                background-color: #FFB6B2;
+            }
+            .reveal .controller a {
+                color: #FFB6B2;
+            }
+.reveal .controls div.navigate-left,
+.reveal .controls div.navigate-left.enabled {
+    border-right-color: #000;
+}
+.reveal .controls div.navigate-right,
+.reveal .controls div.navigate-right.enabled {
+    border-left-color: #000;
+}
+.reveal .controls div.navigate-up,
+.reveal .controls div.navigate-up.enabled {
+    border-bottom-color: #000;
+}
+.reveal .controls div.navigate-down,
+.reveal .controls div.navigate-down.enabled {
+    border-top-color: #000;
+}
+.reveal .progress span {
+    background: #000;
+}
+        </style>
+
+        <!-- If the query includes 'print-pdf', use the PDF print sheet -->
+        <script>
+            document.write( '<link rel="stylesheet" href="css/print/' + ( window.location.search.match( /print-pdf/gi ) ? 'pdf' : 'paper' ) + '.css" type="text/css" media="print">' );
+        </script>
+
+        <!--[if lt IE 9]>
+        <script src="lib/js/html5shiv.js"></script>
+        <![endif]-->
+    </head>
+
+    <body>
+
+        <div class="reveal">
+
+            <div class="slides">
+                <section>
+                    <img src="img/redis.png" style="border:none; box-shadow:none;" height="180" />
+                    <p>
+                        <br>
+                        <small>Povídání pro <a href="http://tkalci.cz/">Tkalce na webu</a> &mdash; <a href="mailto:michal@plovarna.cz">Michal Valoušek</a> &mdash; <a href="http://twitter.com/msgre">@msgre</a><br><br>
+                        <a href="https://github.com/msgre/redis-talk">https://github.com/msgre/redis-talk</a></small>
+                    </p>
+                </section>
+
+                <section>
+                    <q>
+                        Redis is an open source, BSD licensed, advanced key-value store. It is often referred to as a data structure server since keys can contain strings, hashes, lists, sets and sorted sets.
+                    </q>
+                    <p style="text-align:right"><br>&mdash; Salvatore <a href="https://twitter.com/antirez">@antirez</a> Sanfilippo</p>
+                </section>
+
+
+<!-- Memcached -->
+                <section>
+                    <h2>Memcached</h2>
+                    <br>
+                    <img src="img/memcached.png" style="border:none; box-shadow:none;" width="800" />
+                </section>
+
+                <section>
+                    <h2>Memcached</h2>
+                    <br>
+                    <pre><code>
+$memcache_obj = memcache_connect('memcache_host', 11211);
+
+memcache_set($memcache_obj, 'var_key', 'some variable', 0, 30);
+
+echo memcache_get($memcache_obj, 'var_key');
+                    </code></pre>
+                </section>
+
+                <section>
+                    <h2>Memcached</h2>
+
+                    <br>
+                    <p>set &mdash; add &mdash; replace &mdash; append &mdash; prepend</p>
+                    <p>get &mdash; gets</p>
+                    <p>incr &mdash; decr</p>
+                    <p>delete &mdash; flush_all</p>
+                </section>
+
+                <section data-background="img/bye.jpg">
+                    <h2 style="color:#fff; text-shadow: 0px 0px 30px #000;">Zamávejme memcached</h2>
+                </section>
+
+<!-- Redis -->
+                <section data-background="img/blow.gif">
+                    <h1 style="color:#fff; text-shadow: 0px 0px 30px #000;">Přivítejme Redis</h1>
+                </section>
+
+                <section>
+                    <h2>Redis</h2>
+                    <br>
+                    <p>on memory<br>key&ndash;value databáze</p>
+                </section>
+
+                <section>
+                    <h2>Redis</h2>
+                    <br>
+                    <ul>
+                        <li>datové typy</li>
+                        <li>transakce</li>
+                        <li>pub/sub protokol</li>
+                        <li>skriptování</li>
+                        <li>persistence</li>
+                        <li>replikace</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Persistence</h3>
+                    <br>
+                    <ul>
+                        <li>RDB snapshoty<br>
+                    <pre><code>
+# save &lt;seconds&gt; &lt;changes&gt;
+
+save 900 1
+save 300 10
+save 60 10000
+                    </code></pre></li>
+                        <li>AOF (append only files)</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Replikace<br><small>Master &ndash; Slave</small></h3>
+                    <pre><code>
+# SLAVEOF &lt;IP&gt; &lt;PORT&gt;
+SLAVEOF 192.168.1.1 6379
+                    </code></pre>
+                    <img src="img/replication.png" style="border:none; box-shadow:none;" />
+                </section>
+
+<!-- Zakladni datove typy Redise -->
+                <section>
+                    <h2>Základní datové typy Redise</h2>
+                    <br>
+                        <p>string &mdash; list &mdash; set &mdash; sorted set &mdash; hash</p>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>string</strong></h3>
+                    <br>
+                    <ul>
+                        <LI>GET/SET</LI>
+                        <LI>APPEND</LI>
+                        <LI>INCR/DECR</LI>
+                        <LI>STRLEN</LI>
+                        <li>...</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>string</strong></h3>
+                    <br>
+                    <img src="img/string_e.png" style="border:none; box-shadow:none;" height="160" />
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>list</strong></h3>
+                    <br>
+                    <img src="img/list.png" style="border:none; box-shadow:none;" width="700" />
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>list</strong></h3>
+                    <br>
+                    <img src="img/list_e.png" style="border:none; box-shadow:none;" height="140" />
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>set</strong></h3>
+                    <br>
+                    <img src="img/set.png" style="border:none; box-shadow:none;" width="700" />
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>set</strong></h3>
+                    <br>
+                    <img src="img/set_e.png" style="border:none; box-shadow:none;" height="300" />
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>sorted set</strong></h3>
+                    <br>
+                    <img src="img/zset.png" style="border:none; box-shadow:none;" width="700" />
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>sorted set</strong></h3>
+                    <br>
+                    <img src="img/zset_e.png" style="border:none; box-shadow:none;" width="600" />
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>hash</strong></h3>
+                    <br>
+                    <img src="img/hash.png" style="border:none; box-shadow:none;" height="360" />
+                </section>
+
+                <section>
+                    <h3>Datové typy Redise &mdash; <strong>hash</strong></h3>
+                    <br>
+                    <img src="img/hash_e.png" style="border:none; box-shadow:none;" height="360" />
+                </section>
+
+<!-- praxe -->
+                <section data-background="img/stroj2.jpg">
+                    <h2 style="color:#fff; text-shadow: 0px 0px 30px #000;">Pojďme se ušpinit</h2>
+                </section>
+
+                <section>
+                    <h2>Redis prakticky</h2>
+                    <br>
+                    <ul>
+                        <li>oficiální dokumentace <a href="http://redis.io/commands">redis.io/commands</a></li>
+                        <li>interaktivní výukové demo <a href="http://try.redis.io">try.redis.io</a></li>
+                        <li><a href="http://redis.io/clients">knihovny pro váš jazyk</a></li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h3>Omezení web crawleru<br>
+                    <small>(operace "<span style="color:red">SET</span> if <span style="color:red">N</span>ot e<span style="color:red">X</span>ists" nad řetězci)</small></h3>
+                    <br>
+                    <pre><code>
+import redis
+r = redis.Redis()           # konexe na Redis (default na localhost:6379)
+
+def count_requests():
+    key = 'crawler:requests'
+    count = 1
+    if r.setnx(key, count): # O(1)
+        r.expire(key, 60)   # expirace po 60 vterinach, O(1)
+    else:
+        count = r.incr(key) # expirace se nemeni, O(1)
+    return count
+
+# ... v kodu
+if count_requests() > 10:
+    print 'Bez pryc'</code></pre>
+                    <aside class="notes">
+                        - counter downloadu, hlasovani
+                        - counter muze byt pouzit i pro generovani unikatnich id (neco jako seq v postgresql)
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Logování aktivity<br>
+                    <small>(bitové operace s řetězci, <span style="color:red">SETBIT</span> &amp; <span style="color:red">BITCOUNT</span>)</small></h3>
+                    <br>
+                    <p>Kdo se dneska přihlásil?<br>
+                    Kdo si dneska pustil aspoň jednu písničku?<br>
+                    Kolik se dnes stalo kritických chyb?</p>
+                    <br>
+                    <img src="img/unique_users.png" style="border:none; box-shadow:none;" />
+                    <br>
+                    <p><em>Uchování měsíční aktivity pro milión uživatelů představuje cca 4 MB</em></p>
+                </section>
+
+                <section>
+                    <h3>Logování aktivity<br>
+                    <small>(bitové operace s řetězci, <span style="color:red">SETBIT</span> &amp; <span style="color:red">BITCOUNT</span>)</small></h3>
+                    <pre><code>
+import redis
+r = redis.Redis()
+
+def log_activity(day, user_id):
+    key = 'activity:%s' % day   # klic ve tvaru "activity:2014-04-08"
+    r.setbit(key, user_id, 1)   # O(1)
+
+def count_activity(day):
+    key = 'activity:%s' % day
+    return r.bitcount(key)      # O(N)
+
+log_activity('2014-04-08', 2)
+log_activity('2014-04-08', 147)
+print count_activity('2014-04-08')
+</code></pre>
+                    <p><em>Jak zjistíme aktivitu za celý týden?</em></p>
+                    <aside class="notes">
+                        - klice muzou byt i ve tvaru "activity:USER-ID", bitpozice je cislo dne
+                        - bitop
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Capped log<br>
+                    <small>(ořezávání délky listu, <span style="color:red">LTRIM</span>)</small></h3>
+                    <pre><code>
+import redis
+r = redis.Redis()
+
+LIMIT = 100
+KEY = 'log'                     # klic ve tvaru "log"
+
+def log_msg(msg):
+    r.lpush(KEY, msg)           # O(1)
+    r.ltrim(KEY, 0, LIMIT-1)    # O(N), N = pocet odebranych elementu
+
+log_msg('dulezita log hlaska')
+print r.lrange(KEY, 0, -1)
+</code></pre>
+                    <aside class="notes">
+                        - seznam komentaru k clanku "article:1:comments"
+                        - fronty BLPOP key [key ...] timeout
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Operace nad množinama<br>
+                    <small>(sjednocení <span style="color:red">SUNION</span>, rozdíl <span style="color:red">SDIFF</span>, průnik <span style="color:red">SINTER</span>)</small></h3>
+                    <img src="img/mnoziny.png" style="border:none; box-shadow:none;" height="240" />
+                    <p>STORE varianty, např. <code>SUNIONSTORE cil zdroj1 zdroj2</code></p>
+                </section>
+
+                <section>
+                    <h3>Jednoduchý reklamní systém<br>
+                    <small>(náhodný výběr prvku z množiny, <span style="color:red">SRANDMEMBER</span>)</small></h3>
+                    <pre><code class="python">
+import redis
+r = redis.Redis()
+
+r.sadd('ad', 'Na tkalce jezdi pulka Vsetina. Tak proc tu nejste vy?')
+r.sadd('ad', 'Na tkalce jezdi pulka Mezrica. Tak proc tu nejste vy?')
+r.sadd('ad', 'Na tkalce jezdi pulka Roznova. Tak proc tu nejste vy?')
+r.sadd('ad', 'Na tkalce jezdi pulka republiky. Tak proc tu nejste vy?')
+
+r.srandmember('ad')     # O(1)
+</code></pre>
+                </section>
+
+                <section>
+                    <h3>Tagování<br>
+                    <small>(OR/AND/AND NOT s pomocí <span style="color:red">SUNION</span>, <span style="color:red">SINTER</span>, <span style="color:red">SDIFF</span>)</small></h3>
+                    <pre><code class="python">
+import redis
+r = redis.Redis()
+
+r.sadd('tag:python', 'clanek-1', 'clanek-2', 'clanek-3')
+r.sadd('tag:redis',  'clanek-2', 'clanek-6')
+
+r.sunion('tag:python', 'tag:redis')     # python OR redis
+                                        # clanek-1, clanek-2, clanek-3, clanek-6
+r.sinter('tag:python', 'tag:redis')     # python AND redis
+                                        # clanek-2
+r.sdiff('tag:python', 'tag:redis')      # python AND NOT redis
+                                        # clanek-1, clanek-3
+</code></pre>
+                    <aside class="notes">
+                        - mobil Scuk, kategorie a kraje s IDckama
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Koho sledovat na Twitteru?<br>
+                    <small>(<span style="color:red">SINTER</span> nad množinami)</small></h3>
+                    <pre><code class="python">
+import redis
+r = redis.Redis()
+
+r.sadd('user:1:follows', '2', '3', '5')
+r.sadd('user:2:follows', '3', '4', '5')
+r.sadd('user:3:follows', '1', '5', '8', '12')
+r.sadd('user:6:follows', '1', '2', '3')
+
+def who_to_follow(user_id):
+    key = 'user:%s:follows'
+    fkeys = [key % i for i in r.smembers(key % user_id)]
+    return r.sinter(*fkeys)   # O(N*M)
+
+who_to_follow('6')
+</code></pre>
+                    <p><em>Kterého uživatele by měla "6" začít sledovat?</em></p>
+                    <aside class="notes">
+                        - set mych pratel, set lidi co jsou online, prunik = kamosi online
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Seznam živých zařízení<br>
+                    <small>(<span style="color:red">ZREVRANGEBYSCORE</span> nad tříděnou množinou)</small></h3>
+                    <pre><code class="python">
+import redis, time
+r = redis.Redis()
+
+TIME_WINDOW = 60
+
+def update_track(id):
+    r.zadd('devices', **{str(id):time.time()})                  # O(log(N))
+
+def live_devices(window=TIME_WINDOW):
+    t = time.time()
+    return r.zrevrangebyscore('devices', '+inf', t-window)      # O(log(N)+M)
+
+def death_devices(window=TIME_WINDOW):
+    t = time.time()
+    return r.zrevrangebyscore('devices', t-window, '-inf')      # O(log(N)+M)
+</code></pre>
+                    <aside class="notes">
+                        - mobil Scuk, kategorie a kraje s IDckama
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Nejstahovanější soubory<br>
+                    <small>(<span style="color:red">ZINCRBY</span> &amp; <span style="color:red">ZREVRANGEBYSCORE</span> nad tříděnou množinou)</small></h3>
+                    <pre><code class="python">
+import redis, datetime
+r = redis.Redis()
+
+def downloaded(path):
+    now = datetime.datetime.now()
+    r.zincrby('downloads:total', path)                              # O(log(N))
+    r.zincrby('downloads:%s' % now.strftime('%Y-%m-%d'), path)      # O(log(N))
+
+def get_top_files(date=None):
+    if date is None:
+        key = 'downloads:total'
+    else:
+        key = 'downloads:%s' % date.strftime('%Y-%m-%d')
+    return r.zrevrangebyscore(key, '+inf', '-inf', start=0, num=10) # O(log(N)+M)
+</code></pre>
+                    <aside class="notes">
+                        - mobil Scuk, kategorie a kraje s IDckama
+                    </aside>
+                </section>
+
+<!-- odpocinek -->
+                <section data-background="img/rest.jpg">
+                    <h1 style="color:#fff; text-shadow: 0px 0px 30px #000;">Padla</h1>
+                    <aside class="notes">
+                        - distribuovana "cache"
+                        - sila je v systemu klicu a chytrem vyuziti datovych typu
+                        - slozite je vymyslet kam redis pripnout (replikuje stav relacni db, doplnuje ji necim novym?)
+                    </aside>
+                </section>
+
+                <section>
+                    <h2>HyperLogLog</h2>
+                    <br>
+                    <p><span style="color:red;">Horká</span> novinka na závěr</p>
+                </section>
+
+                <section>
+                    <h3>Počítání pasažérů v Amsterodamu</h3>
+                    <br>
+
+                    <ul>
+                        <li>NFC čipy s unikátním ID ve tvaru<br><code>96e4bfec-8cf5-4af1-9469-b7f0dc36dc29</code></li>
+                        <li>check-in při nástupu do vlaku/autobusu/metra</li>
+                        <li>check-out při jejich opuštění</li>
+                    </ul>
+
+                    <aside class="notes">
+                        - pocet unikatnich dotazu (Google)
+                        - pocet dennich incidentu (kazdy log ma sve unikatni ID)
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>HyperLogLog</h3>
+                    <br>
+                    <pre><code>
+PFADD buffer a b c d e f g  # O(1), vrati 1
+PFADD buffer d              # vrati 0 (buffer se nezmenil)
+PFCOUNT buffer              # O(1), vrati 7
+                    </code></pre>
+                    <br>
+                    <p>Velice úsporná datová stuktura (~12 kB), pojme 2<sup><small>64</small></sup> prvků<br>(18 quintiliónů), standard error 0.81%</p>
+
+                    <aside class="notes">
+                        - pocet unikatnich dotazu (Google)
+                        - pocet dennich incidentu (kazdy log ma sve unikatni ID)
+                    </aside>
+                </section>
+
+                <section>
+                    <h3>Díky za pozornost</h3>
+                    <br>
+                    <small>
+                    <ul>
+                        <li><a href="http://redis.io">http://redis.io</a></li>
+                        <li><a href="http://www.slideshare.net/dvirsky/introduction-to-redis">http://www.slideshare.net/dvirsky/introduction-to-redis</a></li>
+                        <li><a href="http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/">http://blog.getspool.com/2011/11/29/fast-easy-realtime-metrics-using-redis-bitmaps/</a></li>
+                        <li><a href="https://geoloqi.com/blog/2011/09/building-a-real-time-location-based-urban-geofencing-game-with-socket-io-redis-node-js-and-sinatra-synchrony/">https://geoloqi.com/blog/2011/09/building-a-real-time-location-based-urban-geofencing-game-with-socket-io-redis-node-js-and-sinatra-synchrony/</a></li>
+                        <li><a href="http://oldblog.antirez.com/post/take-advantage-of-redis-adding-it-to-your-stack.html">http://oldblog.antirez.com/post/take-advantage-of-redis-adding-it-to-your-stack.html</a></li>
+                        <li><a href="http://blog.mjrusso.com/2010/10/17/redis-from-the-ground-up.html">http://blog.mjrusso.com/2010/10/17/redis-from-the-ground-up.html</a></li>
+                        <li><a href="http://www.slideshare.net/wooga/1000000-daily-users-and-no-cache-splash-2011">http://www.slideshare.net/wooga/1000000-daily-users-and-no-cache-splash-2011</a></li>
+                        <li><a href="http://blog.simonwillison.net/post/57956853793/redis">http://blog.simonwillison.net/post/57956853793/redis</a></li>
+                        <li><a href="http://blog.simonwillison.net/post/57956858672/redis">http://blog.simonwillison.net/post/57956858672/redis</a></li>
+                        <li><a href="http://www.slideshare.net/karmi/redis-the-ak47-of-postrelational-databases">http://www.slideshare.net/karmi/redis-the-ak47-of-postrelational-databases></a></li>
+                    </ul>
+                    </small>
+                </section>
+            </div>
+
+        </div>
+
+        <script src="lib/js/head.min.js"></script>
+        <script src="js/reveal.min.js"></script>
+        <script src="jquery.min.js"></script>
+
+        <script>
+
+            // Full list of configuration options available here:
+            // https://github.com/hakimel/reveal.js#configuration
+            Reveal.initialize({
+                controls: true,
+                progress: true,
+                history: true,
+                center: true,
+
+                theme: 'simple', // available themes are in /css/theme
+                transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
+
+                // Optional libraries used to extend on reveal.js
+                dependencies: [
+                    { src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+                    { src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+                    { src: 'plugin/highlight/highlight.js', async: true, callback: function() {
+                        $(document).ready(function(){
+                            $('code').each(function(i, e) {hljs.highlightBlock(e)});
+                        });
+                        //hljs.initHighlightingOnLoad();
+                    } },
+                    { src: 'plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+                    { src: 'plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }
+                ]
+            });
+
+        </script>
+
+    </body>
+</html>

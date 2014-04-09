@@ -1,0 +1,3 @@
+Představení Redise, key-value on-memory databáze. Slajdy z dubnových Tkalců na webu (http://srazy.info/tkalci-na-webu/4449).
+
+Jak rozjet slajdy a demo (unix like systémy): v root adresáři (tam kde je index.html) spustit: python -m SimpleHTTPServer a pak dát do prohlížeče adresu http://localhost:8000/
